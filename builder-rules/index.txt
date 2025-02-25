@@ -1,0 +1,4 @@
+1. Start by reading client/builder-rules/start.txt and perform those actions
+2. Start by reading client/builder-rules/current.txt and client/builder-rules/architecture.txt and perform those actions
+2. Start by reading client/builder-rules/current.txt and client/builder-rules/architecture.txt and perform those actions
+4. Solve the terminal error
