@@ -123,6 +123,34 @@ export function RenderDocs({ content }) {
           tableRow(props) {
             return <tr {...props} />;
           },
+          tableHeader(props) {
+            return <th className="px-4 py-2" {...props} />;
+          },
+          tableBody(props) {
+            return <tbody {...props} />;
+          },
+          tableCaption(props) {
+            return <caption className="text-center" {...props} />;
+          },
+          tableHeaderCell(props) {
+            return <th className="px-4 py-2" {...props} />;
+          },
+          tableFooter(props) {
+            return <tfoot {...props} />;
+          },
+          tableFooterRow(props) {
+            return <tr {...props} />;
+          },
+          tableFooterCell(props) {
+            return <td className="border px-4 py-2" {...props} />;
+          },
+          tableSection(props) {
+            return <tbody {...props} />;
+          },
+          tableRowGroup(props) {
+            return <tbody {...props} />;
+          },
+          
         }}
       >
         {content}

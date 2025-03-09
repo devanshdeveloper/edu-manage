@@ -1,9 +1,54 @@
 import { useState } from 'react';
 
 /**
- * A custom hook for managing visible columns in a table component
+ * A custom hook for managing visible columns in a table component.
+ * @typedef {Object} UseVisibleColumnsReturn
+ * @property {Set<string>} visibleColumns - Set of currently visible column IDs
+ * @property {function(Set<string>): void} onVisibleColumnsChange - Handler for updating visible columns
+ * @property {function(string): boolean} isColumnVisible - Function to check if a column is visible
+ * @property {function(string): void} toggleColumn - Function to toggle column visibility
+ * @property {function(): void} resetVisibleColumns - Function to reset to initial columns
+ *
  * @param {string[]} initialColumns - Array of column IDs that should be visible by default
- * @returns {Object} Object containing visible columns state and handlers
+ * @returns {UseVisibleColumnsReturn} Object containing visible columns state and handlers
+ *
+ * @example
+ * function TableComponent() {
+ *   const columns = ['id', 'name', 'email', 'status'];
+ *   const {
+ *     visibleColumns,
+ *     onVisibleColumnsChange,
+ *     isColumnVisible,
+ *     toggleColumn
+ *   } = useVisibleColumns(['name', 'email']);
+ *
+ *   return (
+ *     <div>
+ *       <div className="column-toggles">
+ *         {columns.map(col => (
+ *           <button
+ *             key={col}
+ *             onClick={() => toggleColumn(col)}
+ *             className={isColumnVisible(col) ? 'active' : ''}
+ *           >
+ *             {col}
+ *           </button>
+ *         ))}
+ *       </div>
+ *       <table>
+ *         <thead>
+ *           <tr>
+ *             {columns.map(col => 
+ *               isColumnVisible(col) && (
+ *                 <th key={col}>{col}</th>
+ *               )
+ *             )}
+ *           </tr>
+ *         </thead>
+ *       </table>
+ *     </div>
+ *   );
+ * }
  */
 export default function useVisibleColumns(initialColumns) {
   const [visibleColumns, setVisibleColumns] = useState(

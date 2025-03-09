@@ -1,25 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
-
-import { ArrowDown, Plus } from "lucide-react";
-
-// import { TeachersList } from "./components/TeachersList";
-// import { TeacherModal } from "./components/TeacherModal";
-// import { TeacherStats } from "./components/TeacherStats";
+import { useCallback, useState } from "react";
+import { Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import ApiEndpoints from "../../../constants/ApiEndpoints";
 import { requestHelper } from "../../../helpers";
-import usePaginationState from "../../../hooks/usePaginationState";
 import { useDisclosure } from "@heroui/use-disclosure";
-import { Avatar, AvatarGroup, AvatarIcon } from "@heroui/avatar";
+import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import Stats from "../../../components/ui/Stats/Stats";
-import useVisibleColumns from "../../../hooks/useVisibleColumns";
 import { Chip } from "@heroui/chip";
-import { Tooltip } from "@heroui/tooltip";
 
 import {
   Search,
-  SlidersHorizontal,
   Mail,
   Phone,
   BookOpen,
@@ -31,23 +22,18 @@ import {
   MoreVertical,
 } from "lucide-react";
 
-import {
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-} from "@heroui/table";
 import { Input } from "@heroui/input";
-import { Pagination } from "@heroui/pagination";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/dropdown";
-import { useBreakpoints, useFilterState } from "../../../hooks";
 import { TableView } from "../../../components/ui/TableView/TableView";
+import { TeacherModal } from "./components/TeacherModal";
+import AsyncSelect from "../../../components/inputs/AsyncSelect";
+import { NumberInput } from "@heroui/number-input";
+import { Select, SelectItem } from "@heroui/select";
 
 const statusColorMap = {
   active: "success",
@@ -103,6 +89,12 @@ const mockTeachers = [
   },
 ];
 
+const mockDepartments = [
+  { label: "Science", value: "science" },
+  { label: "Mathematics", value: "mathematics" },
+  { label: "English", value: "english" },
+];
+
 const TeachersStatsData = [
   {
     title: "Total Teachers",
@@ -156,6 +148,24 @@ export function TeachersPage() {
       return requestHelper.request(ApiEndpoints.Teacher.Stats);
     },
   });
+
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onClose: onModalClose,
+  } = useDisclosure();
+
+  const handleEdit = (teacher) => {
+    setSelectedTeacher(teacher);
+    onModalOpen();
+  };
+
+  const handleAdd = () => {
+    setSelectedTeacher(null);
+    onModalOpen();
+  };
 
   const renderCell = useCallback((item, columnKey) => {
     switch (columnKey) {
@@ -221,26 +231,6 @@ export function TeachersPage() {
       case "actions":
         return (
           <div className="flex items-center gap-2 justify-end">
-            <Tooltip content="View Details">
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                onPress={() => onEdit(item)}
-              >
-                <Eye className="w-4 h-4" />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Edit">
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                onPress={() => onEdit(item)}
-              >
-                <Edit3 className="w-4 h-4" />
-              </Button>
-            </Tooltip>
             <Dropdown>
               <DropdownTrigger>
                 <Button isIconOnly size="sm" variant="light">
@@ -248,6 +238,22 @@ export function TeachersPage() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Teacher actions">
+                <DropdownItem
+                  key="view"
+                  startContent={<Eye className="w-4 h-4" />}
+                  description="View teacher's full details"
+                  onPress={() => onEdit(item)}
+                >
+                  View Details
+                </DropdownItem>
+                <DropdownItem
+                  key="edit"
+                  startContent={<Edit3 className="w-4 h-4" />}
+                  description="Edit teacher's information"
+                  onPress={() => onEdit(item)}
+                >
+                  Edit Teacher
+                </DropdownItem>
                 <DropdownItem
                   key="status"
                   startContent={<BookOpen className="w-4 h-4" />}
@@ -275,7 +281,7 @@ export function TeachersPage() {
   }, []);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Teachers</h1>
@@ -286,7 +292,7 @@ export function TeachersPage() {
         <Button
           color="primary"
           endContent={<Plus className="w-4 h-4" />}
-          //   onPress={handleAdd}
+          onPress={handleAdd}
         >
           Add Teacher
         </Button>
@@ -307,11 +313,97 @@ export function TeachersPage() {
         renderCell={renderCell}
         initialFilters={{
           search: "",
-          department: "",
-          subjects: [],
-          status: "",
-          experience: "",
+          department: new Set([]),
+          subjects: new Set([]),
+          status: new Set([]),
+          experience: 0,
         }}
+        renderFilters={(filters, setFilters) => {
+          console.log({ filters });
+          return (
+            <>
+              <Select
+                className="max-w-xs"
+                label="Favorite Animal"
+                placeholder="Select an animal"
+                // selectedKeys={filters.department}
+                variant="bordered"
+                // onSelectionChange={(value) => setFilters({ department: value })}
+              >
+                {mockDepartments.map((animal) => (
+                  <SelectItem key={animal.value}>{animal.label}</SelectItem>
+                ))}
+              </Select>
+              {/* <AsyncSelect
+                label="Department"
+                labelPlacement="outside"
+                placeholder="Select Department"
+                value={filters.department}
+                onChange={(value) => {
+                  console.log({value});
+                  setFilters({ department: value });
+                }}
+                queryOptions={{
+                  queryKey: ["departments"],
+                  queryFn: () => {
+                    return ;
+                  },
+                }}
+              /> */}
+              <AsyncSelect
+                label="Subjects"
+                labelPlacement="outside"
+                placeholder="Select Subjects"
+                value={filters.subjects}
+                onChange={(e) => setFilters({ subjects: e.target.value })}
+                queryOptions={{
+                  queryKey: ["subjects"],
+                  queryFn: () => {
+                    return [
+                      { label: "Physics", value: "physics" },
+                      { label: "Chemistry", value: "chemistry" },
+                      { label: "Algebra", value: "algebra" },
+                      { label: "Calculus", value: "calculus" },
+                      { label: "Literature", value: "literature" },
+                      { label: "Grammar", value: "grammar" },
+                    ];
+                  },
+                }}
+                multiple
+              />
+              <AsyncSelect
+                label="Status"
+                labelPlacement="outside"
+                placeholder="Select Status"
+                value={filters.status}
+                onChange={(e) => setFilters({ status: e.target.value })}
+                queryOptions={{
+                  queryKey: ["statuses"],
+                  queryFn: () => {
+                    return [
+                      { label: "Active", value: "active" },
+                      { label: "On Leave", value: "onLeave" },
+                      { label: "Inactive", value: "inactive" },
+                    ];
+                  },
+                }}
+              />
+              <NumberInput
+                label="Experience"
+                labelPlacement="outside"
+                placeholder="Select Experience"
+                value={filters.experience}
+                onValueChange={(value) => setFilters({ experience: value })}
+              />
+            </>
+          );
+        }}
+      />
+
+      <TeacherModal
+        teacher={selectedTeacher}
+        isOpen={isModalOpen}
+        onClose={onModalClose}
       />
     </div>
   );

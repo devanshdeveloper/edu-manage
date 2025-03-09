@@ -13,12 +13,13 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <AppNavbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-      <div className="flex h-[calc(100vh-4rem)]">
+      <div className="flex h-[calc(100vh-4rem)] overflow-y-scroll scrollbar-hide">
         <AppSidebar isOpen={isSidebarOpen} />
         <main
           className={`flex-1 p-6 transition-all duration-300 ${isSidebarOpen ? "ml-64" : "ml-0"}`}
         >
           <Outlet />
+          <div className="h-20"></div>
         </main>
       </div>
     </div>

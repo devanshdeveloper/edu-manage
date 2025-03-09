@@ -13,6 +13,7 @@ import {
 } from "../../../hooks";
 import { useQuery } from "@tanstack/react-query";
 import useSelectionRows from "../../../hooks/useSelectedRows";
+import { useDisclosure } from "@heroui/use-disclosure";
 
 const TableContext = createContext();
 
@@ -36,7 +37,11 @@ export function TableProvider({
   const { currentPage, pageSize, totalPages, setCurrentPage, setPageSize } =
     usePaginationState();
 
-  // Selection State
+  const {
+    isOpen: isFilterSheetOpen,
+    onOpen: onFilterSheetOpen,
+    onClose: onFilterSheetClose,
+  } = useDisclosure();
 
   // Filter State
   const {
@@ -147,6 +152,11 @@ export function TableProvider({
     setFilters,
     apply,
     reset,
+
+    // FilterSheet
+    isFilterSheetOpen,
+    onFilterSheetOpen,
+    onFilterSheetClose,
   };
 
   return (

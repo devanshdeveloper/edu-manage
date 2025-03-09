@@ -9,6 +9,10 @@ const breakpoints = {
   "2xl": 1536,
 };
 
+/**
+ * A custom hook that returns the current breakpoint based on window width
+ * @returns {BreakpointSize} Current breakpoint size
+ */
 const useBreakpoints = () => {
   const getBreakpoint = () => {
     const width = window.innerWidth;
@@ -38,3 +42,35 @@ const useBreakpoints = () => {
 };
 
 export default useBreakpoints;
+
+/* Usage Example:
+
+import { useBreakpoints } from './hooks/useBreakpoints';
+
+function ResponsiveComponent() {
+  const breakpoint = useBreakpoints();
+
+  return (
+    <div>
+      <h1>Current Breakpoint: {breakpoint}</h1>
+      {breakpoint === 'xs' && <p>Extra Small Layout</p>}
+      {breakpoint === 'sm' && <p>Small Layout</p>}
+      {breakpoint === 'md' && <p>Medium Layout</p>}
+      {breakpoint === 'lg' && <p>Large Layout</p>}
+      {breakpoint === 'xl' && <p>Extra Large Layout</p>}
+      {breakpoint === '2xl' && <p>2x Extra Large Layout</p>}
+      
+      <div className={`
+        p-4
+        ${breakpoint === 'xs' ? 'text-sm' : ''}
+        ${breakpoint === 'sm' ? 'text-base' : ''}
+        ${breakpoint === 'md' ? 'text-lg' : ''}
+        ${breakpoint === 'lg' ? 'text-xl' : ''}
+        ${breakpoint === 'xl' || breakpoint === '2xl' ? 'text-2xl' : ''}
+      `}>
+        Responsive Text Size
+      </div>
+    </div>
+  );
+}
+*/

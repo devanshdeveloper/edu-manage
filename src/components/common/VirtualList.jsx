@@ -1,5 +1,21 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 
+/**
+ * @typedef {Object} VirtualListProps
+ * @property {Array<any>} items - Array of items to be rendered in the virtual list
+ * @property {number} itemHeight - Fixed height of each item in pixels
+ * @property {number} height - Total height of the virtual list container
+ * @property {(item: any, index: number) => React.ReactNode} renderItem - Function to render each item
+ * @property {number} [overscan=5] - Number of items to render beyond visible area
+ */
+
+/**
+ * A virtualized list component that efficiently renders large lists by only rendering
+ * items that are currently visible in the viewport plus a small overscan area.
+ * 
+ * @param {VirtualListProps} props - Component props
+ * @returns {React.ReactNode} Rendered virtual list
+ */
 const VirtualList = ({
   items,
   itemHeight,
@@ -78,3 +94,36 @@ const VirtualList = ({
 };
 
 export default VirtualList;
+
+/**
+ * Usage Example:
+ * 
+ * ```jsx
+ * import VirtualList from './components/common/VirtualList';
+ * 
+ * function LargeList() {
+ *   // Example with 10000 items
+ *   const items = Array.from({ length: 10000 }, (_, i) => ({
+ *     id: i,
+ *     title: `Item ${i + 1}`
+ *   }));
+ * 
+ *   const renderItem = (item, index) => (
+ *     <div className="p-4 border-b">
+ *       <h3>{item.title}</h3>
+ *       <p>Item Index: {index}</p>
+ *     </div>
+ *   );
+ * 
+ *   return (
+ *     <VirtualList
+ *       items={items}
+ *       itemHeight={80} // Fixed height for each item
+ *       height={400} // Container height
+ *       renderItem={renderItem}
+ *       overscan={3} // Number of items to render beyond visible area
+ *     />
+ *   );
+ * }
+ * ```
+ */

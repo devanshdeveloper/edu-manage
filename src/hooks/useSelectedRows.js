@@ -1,6 +1,23 @@
 import { useState, useMemo } from 'react';
 
-
+/**
+ * A custom hook for managing row selection in tables with support for single and multiple selection modes.
+ * @typedef {Object} UseSelectionRowsProps
+ * @property {Array<any>} items - Array of items to manage selection for
+ * @property {'single'|'multiple'} [selectionMode='multiple'] - Selection mode ('single' or 'multiple')
+ * @property {function(Set<string|number>|'all'): void} [onSelectionChange] - Callback fired when selection changes
+ *
+ * @typedef {Object} UseSelectionRowsReturn
+ * @property {Set<string|number>|'all'} selectedKeys - Currently selected keys
+ * @property {Array<any>} selectedItems - Array of currently selected items
+ * @property {function(Set<string|number>|'all'): void} setSelectedKeys - Function to update selected keys
+ * @property {function(string|number): boolean} isItemSelected - Function to check if an item is selected
+ * @property {function(): void} clearSelection - Function to clear all selections
+ * @property {function(): void} selectAll - Function to select all items
+ * @property {function(): number} getSelectionCount - Function to get count of selected items
+ * @property {'single'|'multiple'} selectionMode - Current selection mode
+ * @property {Object} selectionProps - Props object for NextUI Table component
+ */
 export default function useSelectionRows({ 
   items, 
   selectionMode = 'multiple',
